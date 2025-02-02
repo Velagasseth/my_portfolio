@@ -27,3 +27,49 @@ if submitBtn:
     pred=loaded_reg.predict(x)[0].round(3)
     formatted_salaries = np.array([add_commas(pred)])
     st.info(f'Predicted Annual Salary: {formatted_salaries[0]} /=')
+
+with st.expander("Explore"):
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns 
+
+    data=pd.read_csv("D:\\Datasets\\Employee_Salary_Dataset.csv")
+    st.table(data.head())
+    
+    data0=data.groupby("Gender")['Salary'].sum()
+    st.write(data0)
+    
+
+    st.subheader("Scatter_Chart of the Dataset")
+    data_bar=data.groupby("Gender")['Salary'].sum()
+    st.scatter_chart(data.head())
+    data['Gender']=data['Gender'].replace("Male", 1)
+    data['Gender']=data['Gender'].replace("Female", 0)
+
+    corr_matrix=data.corr()
+    st.subheader("Correlation Matrix Between variables")
+    st.table(corr_matrix)
+
+    df=data.drop("Gender", axis=1)
+    df.head()
+    st.metric("Maximum Age: ", df['Age'].max())
+    st.metric("Minimum Age: ", df['Age'].min())
+    st.subheader("Train Dataset Overview")
+    fig=sns.pairplot(df, hue="Salary")
+    st.pyplot(fig)
+
+    from sklearn.model_selection import train_test_split
+    X=df.drop("Salary", axis=1)
+    y=df['Salary']
+    X_train, X_test, y_train, y_test=train_test_split(X, y, random_state=44, test_size=0.2)
+
+    from sklearn.linear_model import LinearRegression
+    lr=LinearRegression()
+    lr.fit(X_train, y_train)
+    y_pred=lr.predict(X_test)
+    from sklearn.metrics import  mean_squared_error
+    import numpy as np
+
+    error=np.sqrt(mean_squared_error(y_pred, y_test))
+    st.metric("Error:", error.round(4))
+
