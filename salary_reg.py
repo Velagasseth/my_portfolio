@@ -33,7 +33,7 @@ with st.expander("Explore"):
     import matplotlib.pyplot as plt
     import seaborn as sns 
 
-    data=pd.read_csv("D:\\Datasets\\Employee_Salary_Dataset.csv")
+    data=pd.read_csv("Employee_Salary_Dataset.csv")
     st.table(data.head())
     
     data0=data.groupby("Gender")['Salary'].sum()
